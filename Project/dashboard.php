@@ -28,100 +28,158 @@ $is_premium = ($user["account_type"] === "premium");
     <link rel="stylesheet" href="css/styledash.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-    /* Additional CSS for hover effects and modals */
+    /* Updated CSS for cards without hover effects */
     .service-card {
-        transition: all 0.3s ease;
-        cursor: pointer;
-        position: relative;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
         overflow: hidden;
     }
 
-    .service-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    .normal-card {
+        border: 1px solid #4361ee;
     }
 
-    .normal-card:hover {
-        border: 2px solid #4361ee;
+    .premium-card {
+        border: 1px solid gold;
     }
 
-    .premium-card:hover {
-        border: 2px solid gold;
+    .card-content {
+        padding: 20px;
+        cursor: pointer;
     }
 
-    /* Modal styles */
+    .card-icon {
+        font-size: 2.5rem;
+        color: #4361ee;
+        margin-bottom: 15px;
+    }
+
+    .premium-card .card-icon {
+        color: gold;
+    }
+
+    .card-details {
+        margin-top: 15px;
+    }
+
+    .card-details ul {
+        padding-left: 20px;
+    }
+
+    .card-details li {
+        margin-bottom: 8px;
+        line-height: 1.4;
+    }
+
+    /* Fullscreen Modal Styles */
     .modal {
         display: none;
         position: fixed;
-        z-index: 1000;
-        left: 0;
         top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.7);
+        background-color: rgba(0,0,0,0.8);
+        z-index: 1000;
         overflow-y: auto;
     }
 
-    .modal-content {
-        background-color: #fefefe;
-        margin: 5% auto;
-        padding: 30px;
-        border-radius: 10px;
-        width: 80%;
-        max-width: 800px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    .modal-fullscreen {
         position: relative;
-        animation: modalFadeIn 0.3s;
+        width: 100%;
+        min-height: 100vh;
+        background-color: white;
+        padding: 20px;
+        box-sizing: border-box;
     }
 
     .modal-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
+        padding: 15px 0;
         border-bottom: 1px solid #eee;
+        position: sticky;
+        top: 0;
+        background-color: white;
+        z-index: 10;
     }
 
-    .modal-premium .modal-header {
-        background: linear-gradient(90deg, gold, #ffd700);
-        color: #333;
-        padding: 15px 20px;
-        margin: -30px -30px 20px -30px;
-        border-radius: 10px 10px 0 0;
+    .modal-header h2 {
+        margin: 0;
+        font-size: 1.8rem;
+        color: #4361ee;
     }
 
     .modal-premium .modal-header h2 {
-        color: #333;
+        color: #b8860b;
     }
 
-    .modal-normal .modal-header {
-        background: linear-gradient(90deg, #4361ee, #3a56d4);
-        color: white;
-        padding: 15px 20px;
-        margin: -30px -30px 20px -30px;
-        border-radius: 10px 10px 0 0;
+    .modal-body-full {
+        padding: 20px 0;
+    }
+
+    .material-section {
+        margin-bottom: 40px;
+    }
+
+    .material-section h3 {
+        color: #4361ee;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        padding-bottom: 5px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .modal-premium .material-section h3 {
+        color: #b8860b;
+    }
+
+    .material-content {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .modal-premium .material-content {
+        background-color: #fffaf0;
+    }
+
+    .material-image-full {
+        width: 100%;
+        max-height: 400px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin: 15px 0;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .example-box {
+        background-color: #e9ecef;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 15px;
+        border-left: 4px solid #4361ee;
+    }
+
+    .modal-premium .example-box {
+        background-color: #fff8e1;
+        border-left: 4px solid gold;
     }
 
     .close {
-        color: #aaa;
-        font-size: 28px;
-        font-weight: bold;
+        font-size: 2rem;
+        color: #666;
         cursor: pointer;
+        transition: all 0.3s;
     }
 
     .close:hover {
         color: #333;
-    }
-
-    .modal-body {
-        line-height: 1.6;
-    }
-
-    .modal-premium .modal-body {
-        background-color: #fffaf0;
-        padding: 20px;
-        border-radius: 5px;
+        transform: scale(1.1);
     }
 
     .premium-badge-modal {
@@ -135,60 +193,18 @@ $is_premium = ($user["account_type"] === "premium");
         margin-left: 10px;
     }
 
-    @keyframes modalFadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(-50px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Material content styles */
-    .material-section {
-        margin-bottom: 20px;
-    }
-
-    .material-section h3 {
-        color: #4361ee;
-        margin-bottom: 10px;
-    }
-
-    .modal-premium .material-section h3 {
-        color: #b8860b;
-    }
-
-    .material-content {
-        background-color: #f8f9fa;
-        padding: 15px;
-        border-radius: 5px;
-        margin-bottom: 15px;
-    }
-
-    .material-image {
-        max-width: 100%;
-        height: auto;
-        border-radius: 5px;
-        margin: 10px 0;
-        display: block;
-    }
-
-    .material-video {
-        width: 100%;
-        aspect-ratio: 16/9;
-        border-radius: 5px;
-        margin: 10px 0;
-    }
-
     /* Responsive adjustments */
     @media (max-width: 768px) {
-        .modal-content {
-            width: 95%;
-            margin: 10% auto;
-            padding: 20px;
+        .modal-header h2 {
+            font-size: 1.4rem;
+        }
+        
+        .material-section h3 {
+            font-size: 1.3rem;
+        }
+        
+        .material-content {
+            padding: 15px;
         }
     }
     </style>
@@ -216,7 +232,7 @@ $is_premium = ($user["account_type"] === "premium");
         </ul>
     </nav>
 
-    <!-- Hero Section (Tambahan Status Akun) -->
+    <!-- Hero Section -->
     <section id="home" class="hero <?php echo $is_premium ? 'hero-premium' : 'hero-normal'; ?>">
         <div class="hero-content">
             <h1>Selamat Datang, <span id="user-email"><?php echo htmlspecialchars($user["email"]); ?></span>!</h1>
@@ -235,97 +251,119 @@ $is_premium = ($user["account_type"] === "premium");
         </div>
         <div class="service-grid">
             <!-- Kartu untuk semua akun -->
-            <div class="service-card normal-card" onclick="openModal('normal1')">
-                <div class="card-icon">
-                    <i class="fas fa-lightbulb"></i>
+            <div class="service-card normal-card">
+                <div class="card-content" onclick="openModal('normal1')">
+                    <div class="card-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>Pengetahuan dan Pemahaman Umum</h3>
+                    <div class="card-details">
+                        <ul>
+                            <li>✔ Pemahaman konsep dasar akademik</li>
+                            <li>✔ Prinsip-prinsip fundamental berbagai bidang ilmu</li>
+                        </ul>
+                    </div>
                 </div>
-                <h3>Pengetahuan dan Pemahaman Umum</h3>
-                <ul>
-                    <li>✔ Pemahaman konsep dasar akademik</li>
-                    <li>✔ Prinsip-prinsip fundamental berbagai bidang ilmu</li>
-                </ul>
             </div>
 
-            <div class="service-card normal-card" onclick="openModal('normal2')">
-                <div class="card-icon">
-                    <i class="fas fa-brain"></i>
+            <div class="service-card normal-card">
+                <div class="card-content" onclick="openModal('normal2')">
+                    <div class="card-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Pengetahuan Kognitif</h3>
+                    <div class="card-details">
+                        <ul>
+                            <li>✔ Kemampuan berpikir kritis dan analitis</li>
+                            <li>✔ Pengolahan informasi dan penyelesaian masalah</li>
+                        </ul>
+                    </div>
                 </div>
-                <h3>Pengetahuan Kognitif</h3>
-                <ul>
-                    <li>✔ Kemampuan berpikir kritis dan analitis</li>
-                    <li>✔ Pengolahan informasi dan penyelesaian masalah</li>
-                </ul>
             </div>
 
-            <div class="service-card normal-card" onclick="openModal('normal3')">
-                <div class="card-icon">
-                    <i class="fas fa-balance-scale"></i>
+            <div class="service-card normal-card">
+                <div class="card-content" onclick="openModal('normal3')">
+                    <div class="card-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h3>Penalaran Umum</h3>
+                    <div class="card-details">
+                        <ul>
+                            <li>✔ Mengasah logika berpikir</li>
+                            <li>✔ Menyelesaikan soal dengan pendekatan sistematis</li>
+                        </ul>
+                    </div>
                 </div>
-                <h3>Penalaran Umum</h3>
-                <ul>
-                    <li>✔ Mengasah logika berpikir</li>
-                    <li>✔ Menyelesaikan soal dengan pendekatan sistematis</li>
-                </ul>
             </div>
 
             <!-- Kartu eksklusif untuk Premium -->
             <?php if ($is_premium): ?>
-            <div class="service-card premium-card" onclick="openModal('premium1')">
-                <div class="card-icon">
-                    <i class="fas fa-book-reader"></i>
+            <div class="service-card premium-card">
+                <div class="card-content" onclick="openModal('premium1')">
+                    <div class="card-icon">
+                        <i class="fas fa-book-reader"></i>
+                    </div>
+                    <h3>Kemampuan Memahami Bacaan dan Menulis</h3>
+                    <div class="card-details">
+                        <ul>
+                            <li>✔ Meningkatkan pemahaman teks akademik</li>
+                            <li>✔ Teknik menulis yang efektif dan sistematis</li>
+                        </ul>
+                    </div>
                 </div>
-                <h3>Kemampuan Memahami Bacaan dan Menulis</h3>
-                <ul>
-                    <li>✔ Meningkatkan pemahaman teks akademik</li>
-                    <li>✔ Teknik menulis yang efektif dan sistematis</li>
-                </ul>
             </div>
 
-            <div class="service-card premium-card" onclick="openModal('premium2')">
-                <div class="card-icon">
-                    <i class="fas fa-language"></i>
+            <div class="service-card premium-card">
+                <div class="card-content" onclick="openModal('premium2')">
+                    <div class="card-icon">
+                        <i class="fas fa-language"></i>
+                    </div>
+                    <h3>Literasi Bahasa Indonesia</h3>
+                    <div class="card-details">
+                        <ul>
+                            <li>✔ Struktur dan tata bahasa yang benar</li>
+                            <li>✔ Memahami teks kompleks dalam bahasa Indonesia</li>
+                        </ul>
+                    </div>
                 </div>
-                <h3>Literasi Bahasa Indonesia</h3>
-                <ul>
-                    <li>✔ Struktur dan tata bahasa yang benar</li>
-                    <li>✔ Memahami teks kompleks dalam bahasa Indonesia</li>
-                </ul>
             </div>
 
-            <div class="service-card premium-card" onclick="openModal('premium3')">
-                <div class="card-icon">
-                    <i class="fas fa-globe"></i>
+            <div class="service-card premium-card">
+                <div class="card-content" onclick="openModal('premium3')">
+                    <div class="card-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Literasi Bahasa Inggris</h3>
+                    <div class="card-details">
+                        <ul>
+                            <li>✔ Membaca teks akademik dalam bahasa Inggris</li>
+                            <li>✔ Strategi menjawab soal dalam bahasa Inggris</li>
+                        </ul>
+                    </div>
                 </div>
-                <h3>Literasi Bahasa Inggris</h3>
-                <ul>
-                    <li>✔ Membaca teks akademik dalam bahasa Inggris</li>
-                    <li>✔ Strategi menjawab soal dalam bahasa Inggris</li>
-                </ul>
             </div>
             <?php endif; ?>
         </div>
     </section>
 
-    <!-- Modal Windows -->
+    <!-- Modal Windows Fullscreen -->
     <div id="normal1" class="modal">
-        <div class="modal-content modal-normal">
+        <div class="modal-fullscreen">
             <div class="modal-header">
                 <h2>Pengetahuan dan Pemahaman Umum <span class="premium-badge-modal">STANDARD</span></h2>
                 <span class="close" onclick="closeModal('normal1')">&times;</span>
             </div>
-            <div class="modal-body">
+            <div class="modal-body-full">
                 <div class="material-section">
                     <h3>Konsep Dasar Akademik</h3>
                     <div class="material-content">
-                        <p>Materi ini membahas konsep-konsep dasar yang perlu dipahami untuk menghadapi tes akademik:
-                        </p>
+                        <p>Materi ini membahas konsep-konsep dasar yang perlu dipahami untuk menghadapi tes akademik:</p>
                         <ul>
                             <li>Pengenalan struktur tes akademik</li>
                             <li>Teknik membaca cepat dan efektif</li>
                             <li>Strategi menjawab pertanyaan konseptual</li>
                         </ul>
-                        <img src="https://via.placeholder.com/600x300?text=Contoh+Materi+Standard" alt="Materi Standard"
-                            class="material-image">
+                        <img src="https://via.placeholder.com/1200x400?text=Contoh+Materi+Standard" alt="Materi Standard" class="material-image-full">
                     </div>
                 </div>
 
@@ -338,8 +376,7 @@ $is_premium = ($user["account_type"] === "premium");
                             <li>Konsep sains umum</li>
                             <li>Pengetahuan sosial dasar</li>
                         </ul>
-                        <p>Contoh soal:</p>
-                        <div style="background-color: #e9ecef; padding: 10px; border-radius: 5px;">
+                        <div class="example-box">
                             <p><strong>Soal:</strong> Jika x + 5 = 12, maka nilai x adalah...</p>
                             <p><strong>Pembahasan:</strong> x = 12 - 5 = 7</p>
                         </div>
@@ -350,12 +387,12 @@ $is_premium = ($user["account_type"] === "premium");
     </div>
 
     <div id="normal2" class="modal">
-        <div class="modal-content modal-normal">
+        <div class="modal-fullscreen">
             <div class="modal-header">
                 <h2>Pengetahuan Kognitif <span class="premium-badge-modal">STANDARD</span></h2>
                 <span class="close" onclick="closeModal('normal2')">&times;</span>
             </div>
-            <div class="modal-body">
+            <div class="modal-body-full">
                 <div class="material-section">
                     <h3>Berpikir Kritis dan Analitis</h3>
                     <div class="material-content">
@@ -365,8 +402,7 @@ $is_premium = ($user["account_type"] === "premium");
                             <li>Analisis argumen dan bukti</li>
                             <li>Evaluasi solusi alternatif</li>
                         </ul>
-                        <img src="https://via.placeholder.com/600x300?text=Berpikir+Kritis" alt="Berpikir Kritis"
-                            class="material-image">
+                        <img src="https://via.placeholder.com/1200x400?text=Berpikir+Kritis" alt="Berpikir Kritis" class="material-image-full">
                     </div>
                 </div>
 
@@ -388,12 +424,12 @@ $is_premium = ($user["account_type"] === "premium");
     </div>
 
     <div id="normal3" class="modal">
-        <div class="modal-content modal-normal">
+        <div class="modal-fullscreen">
             <div class="modal-header">
                 <h2>Penalaran Umum <span class="premium-badge-modal">STANDARD</span></h2>
                 <span class="close" onclick="closeModal('normal3')">&times;</span>
             </div>
-            <div class="modal-body">
+            <div class="modal-body-full">
                 <div class="material-section">
                     <h3>Logika Berpikir</h3>
                     <div class="material-content">
@@ -403,7 +439,7 @@ $is_premium = ($user["account_type"] === "premium");
                             <li>Analogi dan hubungan logis</li>
                             <li>Pola berpikir sistematis</li>
                         </ul>
-                        <div style="background-color: #e9ecef; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                        <div class="example-box">
                             <p><strong>Contoh:</strong> Jika semua A adalah B, dan beberapa B adalah C, maka...</p>
                             <p><strong>Pembahasan:</strong> Beberapa A mungkin adalah C</p>
                         </div>
@@ -429,12 +465,12 @@ $is_premium = ($user["account_type"] === "premium");
 
     <?php if ($is_premium): ?>
     <div id="premium1" class="modal">
-        <div class="modal-content modal-premium">
+        <div class="modal-fullscreen modal-premium">
             <div class="modal-header">
                 <h2>Kemampuan Memahami Bacaan dan Menulis <span class="premium-badge-modal">PREMIUM</span></h2>
                 <span class="close" onclick="closeModal('premium1')">&times;</span>
             </div>
-            <div class="modal-body">
+            <div class="modal-body-full">
                 <div class="material-section">
                     <h3>Pemahaman Teks Akademik</h3>
                     <div class="material-content">
@@ -444,10 +480,9 @@ $is_premium = ($user["account_type"] === "premium");
                             <li>Teknik skimming dan scanning tingkat lanjut</li>
                             <li>Analisis argumen dalam teks</li>
                         </ul>
-                        <img src="https://via.placeholder.com/600x300?text=Contoh+Materi+Premium" alt="Materi Premium"
-                            class="material-image">
+                        <img src="https://via.placeholder.com/1200x400?text=Contoh+Materi+Premium" alt="Materi Premium" class="material-image-full">
                         <p><em>Contoh teks akademik premium dengan analisis mendalam:</em></p>
-                        <div style="background-color: #fff8e1; padding: 10px; border-radius: 5px;">
+                        <div class="example-box">
                             <p>Analisis teks jurnal ilmiah dengan pendekatan kritis...</p>
                         </div>
                     </div>
@@ -463,10 +498,9 @@ $is_premium = ($user["account_type"] === "premium");
                             <li>Gaya penulisan formal</li>
                             <li>Template penulisan premium</li>
                         </ul>
-                        <iframe class="material-video" src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                            title="Contoh video premium" frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen></iframe>
+                        <div class="video-container">
+                            <iframe class="material-video" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Contoh video premium" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -474,12 +508,12 @@ $is_premium = ($user["account_type"] === "premium");
     </div>
 
     <div id="premium2" class="modal">
-        <div class="modal-content modal-premium">
+        <div class="modal-fullscreen modal-premium">
             <div class="modal-header">
                 <h2>Literasi Bahasa Indonesia <span class="premium-badge-modal">PREMIUM</span></h2>
                 <span class="close" onclick="closeModal('premium2')">&times;</span>
             </div>
-            <div class="modal-body">
+            <div class="modal-body-full">
                 <div class="material-section">
                     <h3>Tata Bahasa Lanjutan</h3>
                     <div class="material-content">
@@ -489,9 +523,8 @@ $is_premium = ($user["account_type"] === "premium");
                             <li>Penggunaan tanda baca tingkat lanjut</li>
                             <li>Gaya bahasa sastra</li>
                         </ul>
-                        <div style="background-color: #fff8e1; padding: 10px; border-radius: 5px; margin-top: 10px;">
-                            <p><strong>Contoh Analisis Premium:</strong> Perbedaan antara "yang mana" dan "di mana"
-                                dalam konteks formal</p>
+                        <div class="example-box">
+                            <p><strong>Contoh Analisis Premium:</strong> Perbedaan antara "yang mana" dan "di mana" dalam konteks formal</p>
                         </div>
                     </div>
                 </div>
@@ -505,8 +538,7 @@ $is_premium = ($user["account_type"] === "premium");
                             <li>Analisis unsur intrinsik</li>
                             <li>Interpretasi makna tersirat</li>
                         </ol>
-                        <p><em>Contoh teks sastra dengan analisis mendalam hanya tersedia untuk anggota premium.</em>
-                        </p>
+                        <p><em>Contoh teks sastra dengan analisis mendalam hanya tersedia untuk anggota premium.</em></p>
                     </div>
                 </div>
             </div>
@@ -514,12 +546,12 @@ $is_premium = ($user["account_type"] === "premium");
     </div>
 
     <div id="premium3" class="modal">
-        <div class="modal-content modal-premium">
+        <div class="modal-fullscreen modal-premium">
             <div class="modal-header">
                 <h2>Literasi Bahasa Inggris <span class="premium-badge-modal">PREMIUM</span></h2>
                 <span class="close" onclick="closeModal('premium3')">&times;</span>
             </div>
-            <div class="modal-body">
+            <div class="modal-body-full">
                 <div class="material-section">
                     <h3>Academic English</h3>
                     <div class="material-content">
@@ -529,9 +561,8 @@ $is_premium = ($user["account_type"] === "premium");
                             <li>Complex sentence structures</li>
                             <li>Academic writing conventions</li>
                         </ul>
-                        <div style="background-color: #fff8e1; padding: 10px; border-radius: 5px; margin-top: 10px;">
-                            <p><strong>Premium Example:</strong> Analysis of scientific journal abstracts with key
-                                terminology highlighting</p>
+                        <div class="example-box">
+                            <p><strong>Premium Example:</strong> Analysis of scientific journal abstracts with key terminology highlighting</p>
                         </div>
                     </div>
                 </div>
@@ -545,10 +576,9 @@ $is_premium = ($user["account_type"] === "premium");
                             <li>Question pattern recognition</li>
                             <li>Elimination strategies for multiple choice</li>
                         </ul>
-                        <iframe class="material-video" src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                            title="English premium video" frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen></iframe>
+                        <div class="video-container">
+                            <iframe class="material-video" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="English premium video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -570,12 +600,10 @@ $is_premium = ($user["account_type"] === "premium");
 
     // Close modal when clicking outside of it
     window.onclick = function(event) {
-        document.querySelectorAll('.modal').forEach(modal => {
-            if (event.target == modal) {
-                modal.style.display = "none";
-                document.body.style.overflow = "auto";
-            }
-        });
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = "none";
+            document.body.style.overflow = "auto";
+        }
     }
 
     // Check for premium status changes
